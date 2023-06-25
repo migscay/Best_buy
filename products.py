@@ -2,17 +2,14 @@ class Product:
 
     def __init__(self, name, price, quantity):
         if not name:
-            print("You have to provide the name of the product.")
+            raise ValueError("You have to provide the name of the product")
         else:
-            try:
-                self.name = name
-            except TypeError:
-                print("You have to provide the name of the product.")
+            self.name = name
 
-        try:
+        if price < 0:
+            raise ValueError("Cannot have a negative price")
+        else:
             self.price = float(price)
-        except (TypeError, ValueError) as error:
-            print("You have to provide a valid price for the Product")
 
         try:
             self.quantity = int(quantity)
@@ -49,7 +46,7 @@ class Product:
         :return: quantity * self.price
         """
         if quantity > self.quantity:
-            raise Exception("Error while making order! Quantity larger than what exists")
+            raise ValueError("Quantity larger than what exists")
 
         self.set_quantity(self.quantity - quantity)
 
@@ -58,6 +55,26 @@ class Product:
 
         return self.price * quantity
 
+
+class NonStockedProduct(Product):
+    def __init__(self, name, price):
+        if not name:
+            raise ValueError("You have to provide the name of the product")
+        else:
+            self.name = name
+
+        if price < 0:
+            raise ValueError("Cannot have a negative price")
+        else:
+            self.price = float(price)
+
+        self.active = True
+
+
+class LimitedProduct(Product):
+    def __init__(self, name, price, quantity, maximum):
+        super().__init__(name, price, quantity)
+        self.maximum = int(maximum)
 
 def main():
     bose = Product("Bose QuietComfort Earbuds", price=250, quantity=500)
